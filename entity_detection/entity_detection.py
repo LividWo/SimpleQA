@@ -45,6 +45,7 @@ class EntityDetection(nn.Module):
         x = self.embed(text)
         # h0 = c0 = (layer*direction, batch_size, hidden_dim)
         if self.config.entity_detection_mode.upper() == 'LSTM':
+            print(config.cuda)
             if self.config.cuda:
                 h0 = torch.zeros(self.config.num_layer * 2, batch_size,
                                           self.config.hidden_size, dtype=torch.long).cuda()
