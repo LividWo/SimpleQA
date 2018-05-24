@@ -6,8 +6,6 @@ import numpy as np
 from torchtext import data
 from args import get_args
 import random
-from evaluation import evaluation
-from sq_entity_dataset import SQdataset
 from entity_detection import EntityDetection
 
 np.set_printoptions(threshold=np.nan)
