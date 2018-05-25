@@ -42,7 +42,8 @@ class EntityDetection(nn.Module):
         # x = (sequence length, batch_size, dimension of embedding)
         text = x.text
         batch_size = text.size()[1]
-        x = self.embed(text)
+        # print(type(text), text)
+        x = self.embed(input=text)
         # h0 = c0 = (layer*direction, batch_size, hidden_dim)
         if self.config.entity_detection_mode.upper() == 'LSTM':
             # print(config.cuda)
