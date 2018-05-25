@@ -6,8 +6,7 @@ import numpy as np
 from torchtext import data
 from args import get_args
 import random
-# from evaluation import evaluation
-# from sq_entity_dataset import SQdataset
+from evaluation import evaluation
 from entity_detection import EntityDetection
 
 np.set_printoptions(threshold=np.nan)
@@ -20,6 +19,7 @@ np.random.seed(args.seed)
 random.seed(args.seed)
 torch.backends.cudnn.deterministic = True
 
+# args.cuda = False
 if not args.cuda:
     args.gpu = -1
 if torch.cuda.is_available() and args.cuda:
@@ -196,17 +196,32 @@ while True:
                     print("Wrong Dataset")
                     exit()
 
+            if args.dataset == 'EntityDetection':
+                P, R, F = evaluation(gold_list, pred_list, index2tag, type=False)
+                print("{} Precision: {:10.6f}% Recall: {:10.6f}% F1 Score: {:10.6f}%".format("Dev", 100. * P, 100. * R,
+                                                                                         100. * F))
+            else:
+                print("Wrong dataset")
+                exit()
 
-
-
-
-
-
-
-
-
-
-
+            # update model
+            if args.dataset == 'EntityDetection':
+                if F > best_dev_F:
+                    best_dev_F = F
+                    best_dev_P = P
+                    best_dev_R = R
+                    iters_not_improved = 0
+                    snapshot_path = os.path.join(save_path, args.specify_prefix + '_best_model.pt')
+                    # save model, delete previous 'best_snapshot' files
+                    torch.save(model, snapshot_path)
+                else:
+                    iters_not_improved += 1
+                    if iters_not_improved > patience:
+                        early_stop = True
+                        break
+            else:
+                print("Wrong dataset")
+                exit()
 
         if iterations % args.log_every == 1:
             # print progress message
