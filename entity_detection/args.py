@@ -5,7 +5,7 @@ def get_args():
     parser = ArgumentParser(description="Joint Prediction")
     parser.add_argument('--entity_detection_mode', type=str, default='LSTM', help='options are LSTM, GRU')
     parser.add_argument('--no_cuda', action='store_false', dest='cuda')
-    parser.add_argument('--gpu', type=int, default=0) # Use -1 for CPU
+    parser.add_argument('--gpu', type=str, default='cuda:0') # Use -1 for CPU
     parser.add_argument('--epochs', type=int, default=30)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--dataset', type=str, default="EntityDetection")

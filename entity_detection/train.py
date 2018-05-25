@@ -21,10 +21,10 @@ torch.backends.cudnn.deterministic = True
 
 # args.cuda = False
 if not args.cuda:
-    args.gpu = -1
+    args.gpu = 'cpu'
 if torch.cuda.is_available() and args.cuda:
     print("Note: You are using GPU for training")
-    torch.cuda.set_device(args.gpu)
+    torch.cuda.set_device(0)
     torch.cuda.manual_seed(args.seed)
 if torch.cuda.is_available() and not args.cuda:
     print("Warning: You have Cuda but not use it. You are using CPU for training.")
