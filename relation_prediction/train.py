@@ -19,7 +19,7 @@ np.random.seed(args.seed)
 random.seed(args.seed)
 torch.backends.cudnn.deterministic = True
 
-args.cuda = False
+# args.cuda = False
 if not args.cuda:
     args.gpu = 'cpu'
 if torch.cuda.is_available() and args.cuda:
@@ -168,13 +168,13 @@ while True:
 
                 if args.dataset == 'RelationPrediction':
                     n_dev_correct += (torch.max(answer, 1)[1].view(dev_batch.relation.size()).data == dev_batch.relation.data).sum()
-                    print(n_dev_correct)
+                    # print(n_dev_correct)
                 else:
                     print("Wrong Dataset")
                     exit()
 
             if args.dataset == 'RelationPrediction':
-                print(n_dev_correct, len(dev))
+                print(n_dev_correct[0], len(dev))
                 P = 1. * n_dev_correct / len(dev)
                 print("{} Precision: {:10.6f}%".format("Dev", 100. * P))
             else:
