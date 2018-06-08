@@ -167,7 +167,7 @@ while True:
 
                 if args.dataset == 'RelationPrediction':
                     n_dev_correct += (torch.max(answer, 1)[1].view(dev_batch.relation.size()).data == dev_batch.relation.data).sum()
-                    print(n_dev_correct)
+                    # print(n_dev_correct)
                 else:
                     print("Wrong Dataset")
                     exit()
