@@ -37,6 +37,7 @@ train, dev, test = data.TabularDataset.splits(
 TEXT.build_vocab(train, dev, test)
 RELATION.build_vocab(train, dev)
 
+#TODO torchtext has the problem with device='' argument
 train_iter = data.Iterator(train, batch_size=args.batch_size, device=args.gpu, train=True, repeat=False,
                                    sort=False, shuffle=True)
 dev_iter = data.Iterator(dev, batch_size=args.batch_size, device=args.gpu, train=False, repeat=False,
