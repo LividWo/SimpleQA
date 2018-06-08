@@ -175,7 +175,8 @@ while True:
 
             if args.dataset == 'RelationPrediction':
                 print(n_dev_correct.item(), len(dev))
-                P = 1. * n_dev_correct / len(dev)
+                P = 1. * n_dev_correct.item() / len(dev)
+                print(P)
                 print("{} Precision: {:10.6f}%".format("Dev", 100. * P))
             else:
                 print("Wrong dataset")
