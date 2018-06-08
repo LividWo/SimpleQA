@@ -4,7 +4,6 @@ import numpy as np
 from torchtext import data
 from args import get_args
 import random
-from sq_relation_dataset import SQdataset
 
 
 np.set_printoptions(threshold=np.nan)
@@ -16,19 +15,26 @@ torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 random.seed(args.seed)
 
+args.cuda = False
 if not args.cuda:
-    args.gpu = -1
+    args.gpu = 'cpu'
 if torch.cuda.is_available() and args.cuda:
     print("Note: You are using GPU for training")
-    torch.cuda.set_device(args.gpu)
+    torch.cuda.set_device(0)
     torch.cuda.manual_seed(args.seed)
 if torch.cuda.is_available() and not args.cuda:
     print("Warning: You have Cuda but not use it. You are using CPU for training.")
 
+# Set up the data for training
 TEXT = data.Field(lower=True)
-RELATION = data.Field(sequential=False)
+RELATION = data.Field()
 
-train, dev, test = SQdataset.splits(TEXT, RELATION, args.data_dir)
+train, dev, test = data.TabularDataset.splits(
+    path=args.data_dir, train='train.txt', validation='valid.txt',
+    test='test.txt', format='tsv',
+    fields=[('id', None), ('sub', None), ('sub name', None), ('relation', RELATION),
+            ('obj', None), ('text', TEXT), ('label', None)]
+)
 TEXT.build_vocab(train, dev, test)
 RELATION.build_vocab(train, dev)
 
@@ -55,6 +61,7 @@ index2word = np.array(TEXT.vocab.itos)
 results_path = os.path.join(args.results_path, args.relation_prediction_mode.lower())
 if not os.path.exists(results_path):
     os.makedirs(results_path, exist_ok=True)
+
 
 def predict(dataset_iter=test_iter, dataset=test, data_name="test"):
     print("Dataset: {}".format(data_name))
