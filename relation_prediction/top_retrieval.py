@@ -50,8 +50,7 @@ print(args.gpu)
 if not args.cuda:
     model = torch.load(args.trained_model)
 else:
-    model = torch.load(args.trained_model, map_location=lambda storage,location: storage.cuda(args.gpu))
-
+    model = torch.load(args.trained_model, map_location=lambda storage,location: storage.cuda(0))
 print(model)
 
 if args.dataset == 'RelationPrediction':
