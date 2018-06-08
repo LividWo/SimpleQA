@@ -16,7 +16,7 @@ np.random.seed(args.seed)
 random.seed(args.seed)
 
 if not args.cuda:
-    args.gpu = 'cpu'
+    args.gpu = -1
 if torch.cuda.is_available() and args.cuda:
     print("Note: You are using GPU for training")
     torch.cuda.set_device(0)
