@@ -15,7 +15,6 @@ torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 random.seed(args.seed)
 
-args.cuda = False
 if not args.cuda:
     args.gpu = 'cpu'
 if torch.cuda.is_available() and args.cuda:
@@ -27,7 +26,7 @@ if torch.cuda.is_available() and not args.cuda:
 
 # Set up the data for training
 TEXT = data.Field(lower=True)
-RELATION = data.Field()
+RELATION = data.Field(sequential=False)
 
 train, dev, test = data.TabularDataset.splits(
     path=args.data_dir, train='train.txt', validation='valid.txt',
@@ -46,7 +45,11 @@ test_iter = data.Iterator(test, batch_size=args.batch_size, device=args.gpu, tra
                                    sort=False, shuffle=False)
 
 # load the model
-model = torch.load(args.trained_model, map_location=lambda storage,location: storage.cuda(args.gpu))
+print(args.gpu)
+if not args.cuda:
+    model = torch.load(args.trained_model)
+else:
+    model = torch.load(args.trained_model, map_location=lambda storage,location: storage.cuda(args.gpu))
 
 print(model)
 
@@ -101,7 +104,8 @@ def predict(dataset_iter=test_iter, dataset=test, data_name="test"):
             exit()
 
     if args.dataset == 'RelationPrediction':
-        P = 1. * n_correct / len(dataset)
+        print(n_correct, type(n_correct), n_retrieved)
+        P = 1. * n_correct.item() / len(dataset)
         print("{} Precision: {:10.6f}%".format(data_name, 100. * P))
         print("no. retrieved: {} out of {}".format(n_retrieved, len(dataset)))
         retrieval_rate = 100. * n_retrieved / len(dataset)
