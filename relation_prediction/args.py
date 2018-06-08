@@ -27,7 +27,7 @@ def get_args():
     parser.add_argument('--vector_cache', type=str, default="../data/sq_glove300d.pt")
     parser.add_argument('--weight_decay',type=float, default=0)
     parser.add_argument('--cnn_dropout', type=float, default=0.5, help='dropout before fully connected layer in CNN')
-    parser.add_argument('--fix_embed', action='store_false', dest='train_embed')
+    parser.add_argument('--fix_embed', default=True, dest='train_embed')
     parser.add_argument('--hits', type=int, default=5)
     # added for testing
     parser.add_argument('--data_dir', type=str, default='../data/processed_simplequestions_dataset/')
