@@ -19,7 +19,7 @@ np.random.seed(args.seed)
 random.seed(args.seed)
 torch.backends.cudnn.deterministic = True
 
-# args.cuda = False
+args.cuda = False
 if not args.cuda:
     args.gpu = 'cpu'
 if torch.cuda.is_available() and args.cuda:
@@ -31,12 +31,12 @@ if torch.cuda.is_available() and not args.cuda:
 
 # Set up the data for training
 TEXT = data.Field(lower=True)
-RELATION = data.Field()
+RELATION = data.Field(sequential=False)
 
 train, dev, test = data.TabularDataset.splits(
     path=args.data_dir, train='train.txt', validation='valid.txt',
     test='test.txt', format='tsv',
-    fields=[('id', None), ('sub', None), ('sub name', None), ('relation', RELATION),
+    fields=[('id', None), ('sub', None), ('sub_name', None), ('relation', RELATION),
             ('obj', None), ('text', TEXT), ('label', None)]
 )
 TEXT.build_vocab(train, dev, test)
@@ -133,7 +133,7 @@ while True:
     epoch += 1
     train_iter.init_epoch()
     n_correct, n_total = 0, 0
-    n_correct_ed, n_correct_ner , n_correct_rel = 0, 0, 0
+    n_correct_ed, n_correct_ner, n_correct_rel = 0, 0, 0
 
     for batch_idx, batch in enumerate(train_iter):
         # Batch size : (Sentence Length, Batch_size)
@@ -143,7 +143,7 @@ while True:
         if args.dataset == 'RelationPrediction':
             n_correct += (torch.max(scores, 1)[1].view(batch.relation.size()).data == batch.relation.data).sum()
             # print(batch.relation.shape, scores.shape)
-            loss = criterion(scores, batch.relation.squeeze())
+            loss = criterion(scores, batch.relation)
         else:
             print("Wrong Dataset")
             exit()
@@ -167,6 +167,7 @@ while True:
 
                 if args.dataset == 'RelationPrediction':
                     n_dev_correct += (torch.max(answer, 1)[1].view(dev_batch.relation.size()).data == dev_batch.relation.data).sum()
+                    print(n_dev_correct)
                 else:
                     print("Wrong Dataset")
                     exit()
